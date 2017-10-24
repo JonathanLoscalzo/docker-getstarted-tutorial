@@ -19,6 +19,19 @@ services:
     # Map port 80 on the host to web’s port 80.
     ports:
       - "80:80"
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    # a volumes key, giving the visualizer access to the host’s socket file for Docker, 
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      # a placement key, ensuring that this service only ever runs on a swarm manager – never a worker
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
     # Instruct web’s containers to share port 80 via a load-balanced network called webnet. 
     # (Internally, the containers themselves will publish to web’s port 80 at an ephemeral port.)
     networks:
