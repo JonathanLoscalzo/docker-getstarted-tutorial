@@ -36,6 +36,29 @@ services:
     # (Internally, the containers themselves will publish to web’s port 80 at an ephemeral port.)
     networks:
       - webnet
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    # redis accesses an arbitrary directory in the host’s file system as /data inside the container, which is where Redis stores data.
+    volumes:
+       - vol-redis:/data
+    # Long Syntax
+    # volumes:
+    #   - type: volume
+    #     source: vol-redis
+    #     target: /data
+    #     volume:
+    #       nocopy: true
+    deploy:
+      # redis always runs on the manager, so it’s always using the same filesystem.
+      placement:
+        constraints: [node.role == manager]
+    command: redis-server --appendonly yes
+    networks:
+      - webnet
 # Define the webnet network with the default settings (which is a load-balanced overlay network).
 networks:
   webnet:
+volumes:
+  vol-redis:
