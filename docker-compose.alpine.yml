@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    image: get-started:part5
+    image: docker-tutorial:latest-alpine
     ports:
      - "80:80"
     depends_on:
